@@ -1,0 +1,59 @@
+version: '3.8'
+services:
+  mongo:
+    image: mongo:6.0
+    container_name: b2b-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+
+  auth-service:
+    build:
+      context: ./backend
+      dockerfile: auth-service/Dockerfile
+    image: auth-service:local
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/authdb
+    depends_on:
+      - mongo
+
+  tenant-service:
+    build:
+      context: ./backend
+      dockerfile: tenant-service/Dockerfile
+    image: tenant-service:local
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/tenantdb
+    depends_on:
+      - mongo
+
+  api-gateway:
+    build:
+      context: ./backend
+      dockerfile: api-gateway/Dockerfile
+    image: api-gateway:local
+    ports:
+      - "8080:8080"
+    depends_on:
+      - auth-service
+      - tenant-service
+
+  frontend:
+    image: nginx:stable-alpine
+    ports:
+      - "4173:80"
+    volumes:
+      - ./frontend/dist:/usr/share/nginx/html:ro
+    depends_on:
+      - api-gateway
+
+volumes:
+  mongo-data:
