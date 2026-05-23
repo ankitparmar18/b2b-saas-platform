@@ -1,0 +1,25 @@
+# Node
+node_modules/
+/frontend/node_modules/
+/frontend/dist/
+
+# Java
+**/target/
+**/.classpath
+**/.project
+**/.settings/
+**/.factorypath
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

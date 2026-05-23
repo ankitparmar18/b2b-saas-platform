@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependencies
+        run: pnpm install
+      - name: Build frontend
+        run: pnpm --filter frontend build
+
+  backend:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [api-gateway, auth-service, tenant-service]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: 21
+      - name: Build backend service
+        run: |
+          cd backend/${{ matrix.service }}
+          mvn -B package -DskipTests

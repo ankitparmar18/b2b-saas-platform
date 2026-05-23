@@ -1,0 +1,17 @@
+{
+  "name": "b2b-saas-platform",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "frontend"
+  ],
+  "scripts": {
+    "dev": "pnpm --filter frontend dev",
+    "build": "pnpm --filter frontend build",
+    "lint": "pnpm --filter frontend lint",
+    "format": "pnpm --filter frontend format"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.0"
+  }
+}
